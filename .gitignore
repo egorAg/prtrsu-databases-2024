@@ -14,3 +14,5 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+./api/dist
+./api/node_modules

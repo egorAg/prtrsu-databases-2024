@@ -1,41 +1,48 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { RedisKeyStorageService } from './redis/redis.key-storage.service';
 import { SetTextData } from './dto/set-text-data.dto';
-import * as crypto from 'crypto'
+import * as crypto from 'crypto';
 
-const GROUP = '223-ZИС'
+const GROUP = '223-ZИС';
+
+const fonts: Record<string, any> = {
+  Helvetica: 'Helvetica',
+  'New York': 'New York',
+  'Source Code Pro': 'Source Code Pro',
+};
 
 @Injectable()
 export class AppService {
-  constructor(
-    private readonly keyStorage: RedisKeyStorageService
-  ) {}
+  constructor(private readonly keyStorage: RedisKeyStorageService) {}
 
   public getFontList() {
-    return {
-        "helvetica": "Helvetica",
-        "new_york": "New York",
-        "source_code": "Source Code Pro"
-    }
+    return fonts;
   }
 
   public getDefaultSettings() {
     return {
-      "fontFamily": "helvetica",
-      "fontSize":   "16",
-      "fontStyle":  "normal",
-      "fontColor":  "#000000",
-    }
+      fontFamily: 'helvetica',
+      fontSize: '16',
+      fontStyle: 'normal',
+      fontColor: '#000000',
+    };
   }
 
   public getUserList() {
-    return ['user1', 'user2', 'user3', 'user4', 'user5']
+    return ['user1', 'user2', 'user3', 'user4', 'user5'];
   }
 
-  async setTextData( data: SetTextData ): Promise<string> {
+  async setTextData(data: SetTextData): Promise<string> {
     const key = await this.getKeyTemplate(data.user);
 
-    await this.keyStorage.set(key, JSON.stringify(data.text));
+    const value = {
+      fontFamily: fonts[data.text.name],
+      fontSize: data.text.size,
+      fontStyle: data.text.lettering,
+      fontColor: data.text.color,
+    };
+
+    await this.keyStorage.set(key, JSON.stringify(value));
 
     return 'Success';
   }
@@ -45,15 +52,15 @@ export class AppService {
     const uuid = await this.getUserKeyByUsername(user);
 
     if (!uuid) {
-      return this.getDefaultSettings()
+      return this.getDefaultSettings();
     }
 
-    const key = `${GROUP}-${user}-${uuid}`
+    const key = `${GROUP}-${user}-${uuid}`;
 
     const isExists = await this.keyStorage.exists(key);
 
     if (isExists) {
-      return this.keyStorage.get(key);
+      return JSON.parse(await this.keyStorage.get(key));
     } else {
       return this.getDefaultSettings();
     }
@@ -75,5 +82,5 @@ export class AppService {
     const uuid = crypto.randomUUID();
     await this.keyStorage.set(username, uuid);
     return `${GROUP}-${username}-${uuid}`;
-}
+  }
 }
