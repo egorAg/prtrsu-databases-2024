@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AppService } from './app.service';
-import { SetTextData } from './dto/set-text-data.dto';
-import { GetTextData } from './dto/get-text-data.dto';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { AppService } from '../app.service';
+import { SetTextData } from '../dto/set-text-data.dto';
+import { GetTextData } from '../dto/get-text-data.dto';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Routes } from '../global/routes';
 
 @Controller('redis-connector')
-export class AppController {
+@ApiTags('Redis')
+export class RedisController {
   constructor(private readonly appService: AppService) {}
 
   @ApiOkResponse({
@@ -14,7 +16,7 @@ export class AppController {
       example: 'Success',
     },
   })
-  @Post('set-text-data')
+  @Post(Routes.Redis.SET_TEXT_DATA)
   setText(@Body() data: SetTextData): any {
     return this.appService.setTextData(data);
   }
@@ -39,8 +41,8 @@ export class AppController {
       },
     },
   })
-  @Post('get-text-data')
-  setUser(@Body() data: GetTextData): any {
+  @Post(Routes.Redis.GET_TEXT_DATA)
+  getUserSettings(@Body() data: GetTextData): any {
     return this.appService.getUserSettings(data.usename);
   }
 
@@ -51,8 +53,8 @@ export class AppController {
       enum: ['user1', 'user2', 'user3', 'user4', 'user5'],
     },
   })
-  @Get('get-users')
-  getText(): any {
+  @Get(Routes.Redis.GET_USERS)
+  getUsers(): any {
     return this.appService.getUserList();
   }
 
@@ -62,7 +64,7 @@ export class AppController {
       example: 'Иди нахуй',
     },
   })
-  @Get('get-fonts')
+  @Get(Routes.Redis.GET_FONTS)
   getFonts(): any {
     return this.appService.getFontList;
   }
