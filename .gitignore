@@ -16,3 +16,7 @@
 !.vscode/extensions.json
 ./api/dist
 ./api/node_modules
+
+/databases/api/node_modules
+/databases/api/dist
+/databases/api/package-lock.json
