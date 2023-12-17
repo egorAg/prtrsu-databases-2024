@@ -36,7 +36,7 @@ export class AppService {
     const key = await this.getKeyTemplate(data.user);
 
     const value = {
-      fontFamily: fonts[data.text.fontFamily],
+      fontFamily: data.text.fontFamily,
       fontSize: data.text.fontSize,
       fontStyle: data.text.fontStyle,
       fontColor: data.text.fontColor,

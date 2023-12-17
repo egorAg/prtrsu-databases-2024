@@ -12,23 +12,23 @@ export class SetTextData {
     properties: {
       text: {
         properties: {
-          name: {
+          fontFamily: {
             example: 'helvetica',
             enum: ['helvetica', 'new_york', 'source_code'],
             description:
               'название шрифта, а там дальше ориентинуйся как хочешь',
           },
-          size: {
+          fontSize: {
             example: 16,
             minimum: 1,
             maximum: 512,
             description: 'Размер шрифта',
           },
-          color: {
+          fontColor: {
             example: '#da00e2',
             description: 'Цвет шрифта в HEX',
           },
-          lettering: {
+          fontStyle: {
             example: 'semi-bold',
             description:
               'Костя, честно, мне поебать что будет сюда ложиться, окей? Просто используй на свое усмотрение',
