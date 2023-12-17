@@ -38,9 +38,9 @@ export class SetTextData {
     },
   })
   text: {
-    name: string;
-    size: number;
-    color: string;
-    lettering: string;
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontStyle: string;
   };
 }

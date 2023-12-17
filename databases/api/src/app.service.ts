@@ -36,10 +36,10 @@ export class AppService {
     const key = await this.getKeyTemplate(data.user);
 
     const value = {
-      fontFamily: fonts[data.text.name],
-      fontSize: data.text.size,
-      fontStyle: data.text.lettering,
-      fontColor: data.text.color,
+      fontFamily: fonts[data.text.fontFamily],
+      fontSize: data.text.fontSize,
+      fontStyle: data.text.fontStyle,
+      fontColor: data.text.fontColor,
     };
 
     await this.keyStorage.set(key, JSON.stringify(value));
