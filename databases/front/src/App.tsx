@@ -7,14 +7,15 @@ import './App.css';
 
 const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [userOptions, setUserOptions] = useState<string[]>([]);
+  const [users, setUsers] = useState<string[]>([]);
   const [text, setText] = useState('');
+  const [userSettings, setUserSettings] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get('http://localhost:3000/redis-connector/redis/get-users');
-        setUserOptions(response.data);
+        setUsers(response.data);
       } catch (error) {
         console.error('Ошибка при получении пользователей:', error);
       }
@@ -23,13 +24,23 @@ const App: React.FC = () => {
     fetchUsers();
   }, []);
 
-  const handleUserChange = (user: string) => {
-    setSelectedUser(user);
-  };
+  const handleSelectUser = (usename: string) => {
+    axios.post('http://localhost:3000/redis-connector/redis/get-text-data', { usename }).then((res) => {
+      setUserSettings(res.data);
+      setSelectedUser(usename);
+    })
+  }
+
+  const handleSave = (newSettings: any) => {
+    console.log('newSettings', newSettings);
+    axios.post('http://localhost:3000/redis-connector/redis/set-text-data', newSettings).then(() => {
+      setUserSettings(newSettings);
+    })
+  }
 
   return (
     <div className="container">
-      <SettingsForm onSave={(data) => console.log('Saved:', data)} userOptions={userOptions} />
+      <SettingsForm onSave={handleSave} users={users} onSelectUser={handleSelectUser} userSettings={userSettings} selectedUser={selectedUser} />
       <TextEditor text={text} onChange={setText} />
       <FormattedText
         username={selectedUser}
