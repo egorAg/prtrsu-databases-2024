@@ -2,12 +2,7 @@ import React from 'react';
 
 interface FormattedTextProps {
   username: string | null;
-  settings: {
-    fontName: string;
-    fontSize: number;
-    fontColor: string;
-    fontStyle: string;
-  };
+  settings: Record<string, any>;
   text: string;
 }
 
