@@ -33,7 +33,7 @@ const App: React.FC = () => {
 
   const handleSave = (newSettings: any) => {
     console.log('newSettings', newSettings);
-    axios.post('http://localhost:3000/redis-connector/redis/set-text-data', newSettings).then(() => {
+    axios.post('http://localhost:3000/redis-connector/redis/set-text-data', { user: selectedUser, text: newSettings }).then(() => {
       setUserSettings(newSettings);
     })
   }
@@ -44,7 +44,7 @@ const App: React.FC = () => {
       <TextEditor text={text} onChange={setText} />
       <FormattedText
         username={selectedUser}
-        settings={{ fontName: 'Arial', fontSize: 16, fontColor: '#000000', fontStyle: 'normal' }}
+        settings={userSettings || { fontName: 'Arial', fontSize: 16, fontColor: '#000000', fontStyle: 'normal' }}
         text={text}
       />
     </div>
