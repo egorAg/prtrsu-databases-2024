@@ -8,6 +8,7 @@ import './App.css';
 const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [userOptions, setUserOptions] = useState<string[]>([]);
+  const [text, setText] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,11 +30,11 @@ const App: React.FC = () => {
   return (
     <div className="container">
       <SettingsForm onSave={(data) => console.log('Saved:', data)} userOptions={userOptions} />
-      <TextEditor text="Some initial text" onChange={(value) => console.log('Text changed:', value)} />
+      <TextEditor text={text} onChange={setText} />
       <FormattedText
         username={selectedUser}
         settings={{ fontName: 'Arial', fontSize: 16, fontColor: '#000000', fontStyle: 'normal' }}
-        text="Some formatted text"
+        text={text}
       />
     </div>
   );
