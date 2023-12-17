@@ -14,8 +14,29 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-./api/dist
-./api/node_modules
+./databases/api/dist
+./databases/api/node_modules
+
+/databases/api/node_modules
+/databases/api/dist
+/databases/api/package-lock.json
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+./databases/front/node_modules
+./databases/front/.pnp
+./databases/front.pnp.js
+
+# testing
+./databases/front/coverage
+
+# production
+./databases/front/build
+
+# misc
+
+./databases/front/npm-debug.log*
 
 /databases/api/node_modules
 /databases/api/dist
