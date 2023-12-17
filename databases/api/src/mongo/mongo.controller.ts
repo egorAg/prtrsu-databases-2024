@@ -1,46 +1,43 @@
-import { Controller, Get, Logger, Param } from '@nestjs/common';
-import { colors, MongoService } from './mongo.service';
+import { Controller, Get, Param } from '@nestjs/common';
+import { colors, delivery, MongoService } from './mongo.service';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Routes } from '../global/routes';
 
-@Controller('mongo')
+@Controller('mongo-connector')
 @ApiTags('Mongo')
 export class MongoController {
   constructor(private readonly productService: MongoService) {}
 
-  //Задание 1 - получение списка товаров по категории
   @ApiOperation({
     summary: 'получение списка товаров по категории',
   })
-  @Get('categories/:categoryName')
+  @Get(Routes.Mongo.TASK_1)
   async getProductNamesByCategory(@Param('categoryName') categoryName: string) {
     return this.productService.findProductsByCategory(categoryName);
   }
 
-  //Задание 2 - Получить список характеристик товаров заданной категории
   @ApiOperation({
     summary: 'Получить список характеристик товаров заданной категории',
   })
-  @Get('characteristics/:categoryName')
+  @Get(Routes.Mongo.TASK_2)
   async getCharacteristicsByCategory(
     @Param('categoryName') categoryName: string,
   ) {
     return this.productService.findCharacteristicsByCategory(categoryName);
   }
 
-  //Задание 3 - получить список названий и стоимости товаров, купленных заданным покупателем
   @ApiOperation({
     summary:
       'получить список названий и стоимости товаров, купленных заданным покупателем',
   })
-  @Get('customers/:customerName')
+  @Get(Routes.Mongo.TASK_3)
   async findProductsByCustomerName(
     @Param('customerName') customerName: string,
   ) {
     return this.productService.findProductsByCustomerName(customerName);
   }
 
-  // Задание 4 - Получить список названий, производителей и цен на товары, имеющие заданный цвет
-  @Get('/:color')
+  @Get(Routes.Mongo.TASK_4)
   @ApiOperation({
     summary:
       'Получить список названий, производителей и цен на товары, имеющие заданный цвет',
@@ -56,18 +53,48 @@ export class MongoController {
     return this.productService.findProductsByColor(color);
   }
 
-  // Задание 5 - Получить общую сумму проданных товаров
-  @Get('total-sales-amount')
+  @Get(Routes.Mongo.TASK_5)
+  @ApiOperation({
+    summary: 'Получить общую сумму проданных товаров',
+  })
   async getTotalSalesAmount() {
     return this.productService.getTotalSalesAmount();
   }
 
-  @Get('customers/:productName')
+  @ApiOperation({
+    summary: 'Получить количество товаров в каждой категории',
+  })
+  @Get(Routes.Mongo.TASK_6)
+  async getProductsCountByCategory() {
+    return this.productService.getProductsCountByCategory();
+  }
+
+  @Get(Routes.Mongo.TASK_7)
+  @ApiOperation({
+    summary: 'Получить список имен покупателей заданного товара',
+  })
+  @ApiParam({
+    name: 'productName',
+    required: true,
+  })
   async getCustomerNamesByProduct(@Param('productName') productName: string) {
     return this.productService.getCustomerNamesByProduct(productName);
   }
 
-  @Get('customers/:productName/:deliveryService')
+  @Get(Routes.Mongo.TASK_8)
+  @ApiOperation({
+    summary:
+      'Получить список имен покупателей заданного товара, с доставкой фирмы с заданным названием.',
+  })
+  @ApiParam({
+    name: 'productName',
+    required: true,
+  })
+  @ApiParam({
+    name: 'deliveryService',
+    required: true,
+    enum: delivery,
+  })
   async getCustomerNamesByProductAndDeliveryService(
     @Param('productName') productName: string,
     @Param('deliveryService') deliveryService: string,
@@ -78,27 +105,22 @@ export class MongoController {
     );
   }
 
-  @Get('products-count-by-category')
-  async getProductsCountByCategory() {
-    return this.productService.getProductsCountByCategory();
-  }
-
-  @Get('all-products')
+  @Get(Routes.Mongo.ALL_PRODUCTS)
   async getAllProducts() {
     return this.productService.getAllProducts();
   }
 
-  @Get('all-customers')
+  @Get(Routes.Mongo.ALL_CUSTOMERS)
   async getAllCustomers() {
     return this.productService.getAllCustomers();
   }
 
-  @Get('all-categories')
+  @Get(Routes.Mongo.ALL_CATEGORIES)
   async getCategories() {
     return this.productService.getAllCategories();
   }
 
-  @Get('all-colors')
+  @Get(Routes.Mongo.ALL_COLORS)
   async getColors() {
     return this.productService.getColors();
   }

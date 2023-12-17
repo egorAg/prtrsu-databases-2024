@@ -3,9 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductDocument } from './schemas/product.schema';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
-import * as chance from 'chance';
 
-const CHANCE = new chance();
 export const categories = [
   'Электроника',
   'Одежда',
@@ -13,6 +11,7 @@ export const categories = [
   'Бытовая техника',
 ];
 export const colors = ['Черный', 'Белый', 'Синий', 'Красный'];
+export const delivery = ['ozon', 'wb', 'cdek', 'pek'];
 
 @Injectable()
 export class MongoService {
@@ -22,7 +21,7 @@ export class MongoService {
   ) {}
 
   async findProductsByCategory(category: string): Promise<Product[]> {
-    const products = await this.productModel
+    return await this.productModel
       .find({
         'characteristics.category': category,
       })
@@ -36,8 +35,6 @@ export class MongoService {
 
         return res;
       });
-
-    return products;
   }
 
   async findCharacteristicsByCategory(
@@ -49,11 +46,9 @@ export class MongoService {
       })
       .exec();
 
-    const characteristicsList = products.map((product) => {
+    return products.map((product) => {
       return product['characteristics'];
     });
-
-    return characteristicsList;
   }
 
   async findProductsByCustomerName(
@@ -146,9 +141,7 @@ export class MongoService {
       return [];
     }
 
-    const customerNames = product.customers.map((customer) => customer.name);
-
-    return customerNames;
+    return product.customers.map((customer) => customer.name);
   }
 
   async getCustomerNamesByProductAndDeliveryService(
@@ -163,19 +156,17 @@ export class MongoService {
       return [];
     }
 
-    const customersWithDeliveryService = product.customers
+    return product.customers
       .filter((customer) => customer.deliveryService === deliveryService)
       .map((customer) => customer.name);
-
-    return customersWithDeliveryService;
   }
 
-  async getAllProducts(): Promise<Product[]> {
-    return this.productModel.find().exec();
-  }
-
-  async getAllCustomers(): Promise<User[]> {
+  public async getAllCustomers() {
     return this.userModel.find().exec();
+  }
+
+  public async getAllProducts() {
+    return this.productModel.find().exec();
   }
 
   async getAllCategories() {
@@ -184,61 +175,5 @@ export class MongoService {
 
   async getColors() {
     return colors;
-  }
-
-  async createUsers() {
-    const users: User[] = [];
-    for (let i = 0; i < 5; i++) {
-      const newUser: User = {
-        name: CHANCE.name(),
-        purchaseDate: this.generateRandomDate(),
-        review: CHANCE.sentence(),
-        deliveryService: CHANCE.company(),
-      };
-      users.push(newUser);
-
-      const model = await this.userModel.create(newUser);
-      await model.save();
-    }
-
-    return users;
-  }
-
-  async createProducts() {
-    const products: Product[] = [];
-    const users = await this.getAllCustomers();
-    for (let i = 0; i < 20; i++) {
-      const randomCategoryIndex = CHANCE.integer({
-        min: 0,
-        max: categories.length - 1,
-      });
-      const randomColorIndex = CHANCE.integer({
-        min: 0,
-        max: colors.length - 1,
-      });
-      const newProduct: Product = {
-        name: CHANCE.word(),
-        manufacturer: CHANCE.company(),
-        price: CHANCE.floating({ min: 1, max: 1000, fixed: 2 }),
-        characteristics: new Map<string, any>([
-          ['category', categories[randomCategoryIndex]],
-          ['color', colors[randomColorIndex]],
-        ]),
-        customers: CHANCE.pickset(users, CHANCE.integer({ min: 1, max: 5 })), // Связываем случайных пользователей с продуктом
-      };
-
-      const model = await this.productModel.create(newProduct);
-      await model.save();
-      products.push(newProduct);
-    }
-
-    return products;
-  }
-
-  private generateRandomDate(): Date {
-    const currentDate = new Date();
-    const pastDate = new Date(currentDate);
-    pastDate.setMonth(currentDate.getMonth() - 6);
-    return new Date(CHANCE.date({ min: pastDate, max: currentDate }));
   }
 }

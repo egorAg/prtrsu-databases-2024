@@ -18,3 +18,5 @@ npm/pnpm/yarn/bun start:dev
 ```
 
 Выбор менеджера пакетов исключительно ваше дело
+
+## Swagger (API UI) - localhost:3000/api

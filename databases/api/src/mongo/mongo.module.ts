@@ -4,6 +4,7 @@ import { MongoController } from './mongo.controller';
 import { MongoService } from './mongo.service';
 import { Product, ProductSchema } from './schemas/product.schema';
 import { User, UserSchema } from './schemas/user.schema';
+import { MongoStartService } from './mongo.start.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { User, UserSchema } from './schemas/user.schema';
     ]),
   ],
   controllers: [MongoController],
-  providers: [MongoService],
-  exports: [MongoService],
+  providers: [MongoService, MongoStartService],
+  exports: [MongoService, MongoStartService],
 })
 export class MongoModule {}

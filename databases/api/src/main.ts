@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { MongoService } from './mongo/mongo.service';
+import { MongoStartService } from './mongo/mongo.start.service';
+import mongoose from 'mongoose';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,16 +18,17 @@ async function bootstrap() {
 
   await app.listen(3000);
 
-  const mongoService = app.get(MongoService);
+  mongoose.set('debug', (collectionName, method, query, doc) => {
+    Logger.debug(`${collectionName}.${method}`, JSON.stringify(query), doc);
+  });
+
+  const mongoService = app.get(MongoStartService);
 
   try {
-    // Проверяем, есть ли данные в базе
-    const existingUsers = await mongoService.getAllCustomers();
-    const existingProducts = await mongoService.getAllProducts();
+    const existingUsers = await mongoService.getAllCustomersAtStart();
+    const existingProducts = await mongoService.getAllProductsAtStart();
 
-    // Если в базе нет пользователей или продуктов, создаем их
     if (existingUsers.length === 0 && existingProducts.length === 0) {
-      // Сохраняем пользователей и продукты в базу данных
       await mongoService.createUsers();
       await mongoService.createProducts();
       console.log('Инициализация данных завершена.');
