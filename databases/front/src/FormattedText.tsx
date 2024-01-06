@@ -7,13 +7,15 @@ interface FormattedTextProps {
 }
 
 const FormattedText: React.FC<FormattedTextProps> = ({ username, settings, text }) => {
-  const { fontName, fontSize, fontColor, fontStyle } = settings;
+  const { fontFamily, fontSize, fontColor, fontStyle } = settings;
+
+  console.log(settings);
 
   const textStyle: React.CSSProperties = {
-    fontFamily: fontName,
+    fontFamily,
     fontSize: fontSize + 'px',
     color: fontColor,
-    fontStyle: fontStyle,
+    fontWeight: fontStyle,
   };
 
   return (

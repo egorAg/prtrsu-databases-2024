@@ -76,9 +76,9 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onSave, onSelectUser, users
       <div className="input-container">
         <label className="label">Начертание:</label>
         <select name="fontStyle" value={settings.fontStyle} onChange={handleChange}>
+          <option value="lighter">Тонкий</option>
           <option value="normal">Обычный</option>
-          <option value="italic">Курсив</option>
-          <option value="bold">Полужирный</option>
+          <option value="bold">Жирный</option>
         </select>
       </div>
 

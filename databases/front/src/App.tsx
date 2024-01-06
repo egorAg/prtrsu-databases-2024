@@ -6,7 +6,7 @@ import axios from "axios";
 import "./App.css";
 
 const DEFAULT_SETTINGS = {
-  fontName: "Arial",
+  fontFamily: "Arial",
   fontSize: 16,
   fontColor: "#000000",
   fontStyle: "normal",
