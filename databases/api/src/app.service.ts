@@ -33,8 +33,6 @@ export class AppService {
   }
 
   async setTextData(data: SetTextData): Promise<string> {
-    const key = await this.getKeyTemplate(data.user);
-
     const value = {
       fontFamily: data.text.fontFamily,
       fontSize: data.text.fontSize,
@@ -42,8 +40,17 @@ export class AppService {
       fontColor: data.text.fontColor,
     };
 
-    await this.keyStorage.set(key, JSON.stringify(value));
+    const isKeyed = await this.getUserKeyByUsername(data.user);
 
+    if (isKeyed) {
+      await this.keyStorage.set(
+        await this.getKeyTemplate(data.user, isKeyed),
+        JSON.stringify(value),
+      );
+    } else {
+      const key = await this.getKeyTemplate(data.user);
+      await this.keyStorage.set(key, JSON.stringify(value));
+    }
     return 'Success';
   }
 
@@ -78,8 +85,11 @@ export class AppService {
   }
 
   //Получение ключа для установки настроек текста
-  private async getKeyTemplate(username: string) {
+  private async getKeyTemplate(username: string, key?: string) {
     const uuid = crypto.randomUUID();
+    if (key) {
+      return `${GROUP}-${username}-${key}`;
+    }
     await this.keyStorage.set(username, uuid);
     return `${GROUP}-${username}-${uuid}`;
   }
