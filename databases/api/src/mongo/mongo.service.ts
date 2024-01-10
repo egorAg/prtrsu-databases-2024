@@ -60,8 +60,6 @@ export class MongoService {
       })
       .exec();
 
-    Logger.log(products);
-
     const customerProducts: { name: string; price: number }[] = [];
 
     for (const product of products) {
@@ -102,8 +100,6 @@ export class MongoService {
 
   async getTotalSalesAmount(): Promise<number> {
     const products = await this.productModel.find().exec();
-
-    Logger.log(products);
 
     let totalAmount = 0;
 
